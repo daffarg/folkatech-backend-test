@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
+const db = require("../models");
+const Auth = db.auths;
 
-const verifyToken = (req, res, next) => {
+const verifyToken = async (req, res, next) => {
     const token = req.headers["authorization"];
     console.log(token)
   
@@ -10,9 +12,16 @@ const verifyToken = (req, res, next) => {
 
     try {
       const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-      req.user = decoded;
+    
+      // verify the token in the database
+      const auth = await Auth.findOne({"userName": decoded.userName});
+      if (auth.token !== token) {
+        return res.status(401).send({"message": "Invalid token or token has expired"});
+      }
+
+      req.userName = decoded;
     } catch (err) {
-      return res.status(401).send({"message": "Invalid token"});
+      return res.status(401).send({"message": "Invalid token or token has expired"});
     }
     return next();
   };
