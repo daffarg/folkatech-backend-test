@@ -10,37 +10,35 @@ const isRequestBodyEmpty = (req) => {
     return false; 
 };
 
-const DUPLICATE_KEY_ERR = 11000
-
 // create a new user
 exports.create = (req, res) => {
     if (isRequestBodyEmpty(req)) {
-      res.status(400).send({ message: "Request is empty!" });
-      return;
+        res.status(400).send({ message: "All field must be filled" });
+        return;
     }
   
     const user = new User({
-      userName: req.body.userName,
-      accountNumber: req.body.accountNumber,
-      emailAddress: req.body.emailAddress,
-      identityNumber: req.body.identityNumber,
+        userName: req.body.userName,
+        accountNumber: req.body.accountNumber,
+        emailAddress: req.body.emailAddress,
+        identityNumber: req.body.identityNumber,
     });
   
     user
-      .save(user)
-      .then(data => {
+        .save(user)
+        .then(data => {
         res.send(data);
-      })
-      .catch(err => {
-        if (err.code === DUPLICATE_KEY_ERR) {
-            res.status(400).send({ message: 'User has already exists' });
-        } else {
-            res.status(500).send({
-                message:
-                  err.message || "Failed to create a new user"
-              });
-        }
-      });
+        })
+        .catch(err => {
+            if (err.code === db.DUPLICATE_KEY_ERR) {
+                res.status(400).send({ message: 'User has already exists' });
+            } else {
+                res.status(500).send({
+                    message:
+                        err.message || "Failed to create a new user"
+                    });
+            }
+        });
   };
   
 // find all users
@@ -126,11 +124,11 @@ exports.updateByIdentityNumber = (req, res) => {
         if (result.nModified === 0) {
             res.status(404).send({ message: `User with identity number ${identityNumber} not found`});
         } else {
-            res.send("User successfully updated");
+            res.send({"message": "User successfully updated"});
         }
       })
       .catch(err => {
-        if (err.code === DUPLICATE_KEY_ERR) {
+        if (err.code === db.DUPLICATE_KEY_ERR) {
             res.status(400).send({ message: 'User has already exists' });
         } else {
             res.status(500).send({
@@ -150,11 +148,11 @@ exports.updateByAccountNumber = (req, res) => {
         if (result.nModified === 0) {
             res.status(404).send({ message: `User with account number ${accountNumber} not found`});
         } else {
-            res.send("User successfully updated");
+            res.send({"message": "User successfully updated"});
         }
       })
       .catch(err => {
-        if (err.code === DUPLICATE_KEY_ERR) {
+        if (err.code === db.DUPLICATE_KEY_ERR) {
             res.status(400).send({ message: 'User has already exists' });
         } else {
             res.status(500).send({

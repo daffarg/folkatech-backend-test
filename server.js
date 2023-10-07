@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 
 var corsOptions = {
-  origin: `http://${process.env.HOST}:${PORT}}`
+  origin: `http://${process.env.HOST}:${PORT}`
 };
 
 app.use(cors(corsOptions));
@@ -33,6 +33,7 @@ db.mongoose.connect(db.url, {
   });
 
 require("./app/routes/user.route")(app);
+require("./app/routes/auth.route")(app);
 
 app.listen(PORT, async () => {
   console.log(`Server up on port ${PORT}`);
