@@ -32,6 +32,7 @@ db.mongoose.connect(db.url, {
     process.exit();
   });
 
+require("./app/routes/user.route")(app);
 
 app.listen(PORT, async () => {
   console.log(`Server up on port ${PORT}`);

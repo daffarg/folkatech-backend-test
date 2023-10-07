@@ -1,10 +1,10 @@
 module.exports = mongoose => {
     var schema = mongoose.Schema(
       {
-        userName: String,
-        accountNumber: String,
-        emailAddress: String,
-        identityNumber: String,
+        userName: {type: String, required: true, unique: true},
+        accountNumber: {type: String, required: true, unique: true},
+        emailAddress: {type: String, required: true, unique: true},
+        identityNumber: {type: String, required: true, unique: true},
       },
       { timestamps: true }
     );
@@ -15,6 +15,6 @@ module.exports = mongoose => {
       return object;
     });
   
-    const User = mongoose.model("user", schema);
+    const User = mongoose.model("users", schema);
     return User;
   };
