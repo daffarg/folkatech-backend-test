@@ -2,9 +2,9 @@ module.exports = mongoose => {
     var schema = mongoose.Schema(
       {
         userName: {type: String, required: true, unique: true},
-        accountNumber: {type: String, required: true, unique: true},
-        emailAddress: {type: String, required: true, unique: true},
-        identityNumber: {type: String, required: true, unique: true},
+        password: {type: String, required: true},
+        token: {type: String, default: null},
+        lastTokenCreatedAt: {type: Date, default: null},
       },
       { timestamps: true }
     );
@@ -15,6 +15,6 @@ module.exports = mongoose => {
       return object;
     });
   
-    const User = mongoose.model("users", schema);
+    const User = mongoose.model("auths", schema);
     return User;
   };
