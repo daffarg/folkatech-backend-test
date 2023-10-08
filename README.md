@@ -4,7 +4,6 @@
 * [Technologies Used](#technologies-used)
 * [Features](#features)
 * [Setup](#setup)
-* [Usage](#usage)
 * [Contact](#contact)
 <!-- * [License](#license) -->
 
@@ -35,11 +34,26 @@ Path:
 ```
 /auth/login
 ```
-Example Response: 
+Example Request 
 ```
 {
     "userName": "budi",
     "password": "passwordbudi"
+}
+```
+### Create New User
+Method: POST
+Path: 
+```
+/api/users
+```
+Example Request 
+```
+{
+    "userName": "badu",
+    "accountNumber": "82424224",
+    "emailAddress": "tes@gmail.com",
+    "identityNumber": "279113311"
 }
 ```
 
@@ -71,12 +85,30 @@ Path:
 ```
 /api/users/accountNumber/:accountNumber
 ```
+Example Request 
+```
+{
+    "userName": "badu",
+    "accountNumber": "82424224",
+    "emailAddress": "tes@gmail.com",
+    "identityNumber": "279113311"
+}
+```
 
 ### Update User by Identity Number
 Method: PUT
 Path: 
 ```
 /api/users/identityNumber/:identityNumber
+```
+Example Request 
+```
+{
+    "userName": "badu",
+    "accountNumber": "82424224",
+    "emailAddress": "tes@gmail.com",
+    "identityNumber": "279113311"
+}
 ```
 
 ### Delete All Users
