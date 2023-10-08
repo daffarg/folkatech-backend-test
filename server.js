@@ -47,6 +47,10 @@ const redis = require("redis");
 require("./app/routes/user.route")(app);
 require("./app/routes/auth.route")(app);
 
+app.get('/', (req, res) => {
+  res.send('My name is Mohamad Daffa Argakoesoemah. This is technical test for Folkatech.')
+})
+
 app.listen(PORT, async () => {
   console.log(`Server up on port ${PORT}`);
 });
