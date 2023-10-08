@@ -13,11 +13,11 @@
       },
       {
         "src": "/auth/(.*)",
-        "dest": "/routes/auth.route.js"
+        "dest": "/app/routes/auth.route.js"
       },
       {
         "src": "/api/users/(.*)",
-        "dest": "/routes/user.route.js"
+        "dest": "/app/routes/user.route.js"
       }
     ]
 }
