@@ -32,6 +32,20 @@ db.mongoose.connect(db.url, {
     process.exit();
   });
 
+const redis = require("redis");
+(async () => {
+  db.redis = redis.createClient({
+    host: process.env.REDIS_HOST,
+    port: parseInt(process.env.REDIS_PORT),
+    password: process.env.REDIS_PASSWORD,
+    tls: true,
+  });
+
+  db.redis.on("error", (error) => console.error(`Error : ${error}`));
+
+  await db.redis.connect();
+})();
+
 require("./app/routes/user.route")(app);
 require("./app/routes/auth.route")(app);
 

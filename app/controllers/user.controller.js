@@ -42,77 +42,136 @@ exports.create = (req, res) => {
   };
   
 // find all users
-exports.findAll = (req, res) => {
-    User.find()
-      .then(data => {
-        res.send(data);
-      })
-      .catch(err => {
+exports.findAll = async (req, res) => {
+    try {
+      const usersCached = await db.redis.get("users");
+      if (usersCached) {
+        res.send(JSON.parse(usersCached))
+      } else {
+        try {
+          const data = await User.find()
+          if (data) {
+            try {
+              await db.redis.set("users", JSON.stringify(data), {'EX': db.REDIS_EXPIRY_TIME});
+            } catch (err) {
+              console.log(err.message)
+            } finally {
+              res.send(data);
+            }
+          } else {
+            res.status(404).send({ message: "No users found" });
+          }
+        } catch (err) {
+          res.status(500).send({
+            message:
+              err.message || "Failed to get users"
+          });
+        }
+      }
+    } catch (err) {
+      User.find().then(data => {
+        if (!data) {
+          res.status(404).send({ message: "No users found" });
+        } else {
+          res.send(data)
+        }
+      }).catch(err => {
         res.status(500).send({
           message:
             err.message || "Failed to get users"
         });
-      });
+      })
+    }
   };
 
 // find by identity number
-exports.findOneByIdentityNumber = (req, res) => {
+exports.findOneByIdentityNumber = async (req, res) => {
     const identityNumber = req.params.identityNumber;
-
-    User.findOne({identityNumber: identityNumber})
-      .then(data => {
-        if (!data) {
-            res.status(404).send({ message: "User not found for the given identity number." });
-        } else {
-            res.send(data);
+    const redisKey = `users:identityNumber#${identityNumber}`
+    try {
+      const userCached = await db.redis.get(redisKey);
+      if (userCached) {
+        res.send(JSON.parse(userCached))
+      } else {
+        try {
+          const data = await User.findOne({identityNumber: identityNumber})
+          if (data) {
+            try {
+              await db.redis.set(redisKey, JSON.stringify(data), {'EX': db.REDIS_EXPIRY_TIME});
+            } catch (err) {
+              console.log(err.message)
+            } finally {
+              res.send(data);
+            }
+          } else {
+            res.status(404).send({ message: "User not found for the given identity number" });
+          }
+        } catch (err) {
+          res.status(500).send({
+            message:
+              err.message || "Failed to get a user"
+          });
         }
-      })
-      .catch(err => {
+      }
+    } catch (err) {
+      User.findOne({identityNumber: identityNumber}).then(data => {
+        if (!data) {
+          res.status(404).send({ message: "User not found for the given identity number" });
+        } else {
+          res.send(data)
+        }
+      }).catch(err => {
         res.status(500).send({
           message:
-            err.message || "Failed to get a user by identity number"
+            err.message || "Failed to a user"
         });
-      });
+      })
+    }
   };
 
 // find by account number
-exports.findOneByAccountNumber = (req, res) => {
+exports.findOneByAccountNumber = async (req, res) => {
     const accountNumber = req.params.accountNumber;
-
-    User.findOne({accountNumber: accountNumber})
-      .then(data => {
-        if (!data) {
-            res.status(404).send({ message: "User not found for the given account number." });
-        } else {
-            res.send(data);
+    const redisKey = `users:accountNumber#${accountNumber}`
+    try {
+      const userCached = await db.redis.get(redisKey);
+      if (userCached) {
+        res.send(JSON.parse(userCached))
+      } else {
+        try {
+          const data = await User.findOne({accountNumber: accountNumber})
+          if (data) {
+            try {
+              await db.redis.set(redisKey, JSON.stringify(data), {'EX': db.REDIS_EXPIRY_TIME});
+            } catch (err) {
+              console.log(err.message)
+            } finally {
+              res.send(data);
+            }
+          } else {
+            res.status(404).send({ message: "User not found for the given account number" });
+          }
+        } catch (err) {
+          res.status(500).send({
+            message:
+              err.message || "Failed to get a user"
+          });
         }
-      })
-      .catch(err => {
+      }
+    } catch (err) {
+      User.findOne({accountNumber: accountNumber}).then(data => {
+        if (!data) {
+          res.status(404).send({ message: "User not found for the given account number" });
+        } else {
+          res.send(data)
+        }
+      }).catch(err => {
         res.status(500).send({
           message:
-            err.message || "Failed to get a user by account number"
+            err.message || "Failed to a user"
         });
-      });
-  };
-
-// find by account number
-exports.findOneByAccountNumber = (req, res) => {
-    const accountNumber = req.params.accountNumber;
-
-    User.findOne({accountNumber: accountNumber})
-      .then(data => {
-        if (!data) {
-            res.status(404).send({ message: "User not found for the given account number." });
-        } else {
-            res.send(data);
-        }
       })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Failed to get a user by account number"
-        });
-      });
+    }
   };
 
 // update by identity number

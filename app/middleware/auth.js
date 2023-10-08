@@ -4,7 +4,6 @@ const Auth = db.auths;
 
 const verifyToken = async (req, res, next) => {
     const token = req.headers["authorization"];
-    console.log(token)
   
     if (!token) {
       return res.status(403).send({"message": "A token is required to use the APIs"});
