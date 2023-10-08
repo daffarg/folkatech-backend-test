@@ -35,9 +35,7 @@ db.mongoose.connect(db.url, {
 const redis = require("redis");
 (async () => {
   db.redis = redis.createClient({
-    host: process.env.REDIS_HOST,
-    port: parseInt(process.env.REDIS_PORT),
-    password: process.env.REDIS_PASSWORD,
+    url: process.env.REDIS_URL,
     tls: true,
   });
 
